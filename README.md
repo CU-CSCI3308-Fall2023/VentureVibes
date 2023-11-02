@@ -11,7 +11,7 @@ Empowering personalized travel experiences, our app simplifies vacation planning
 
 ---------------------------------------------
 
-Technology Stack:
+Technology Stack: Node.js, EJS, HTML, CSS, JavaScript
 
 Prerequisites to run the application:
 
