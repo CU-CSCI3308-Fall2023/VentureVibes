@@ -23,7 +23,11 @@ Link to the deployed application: N/A for now
 
 ------------------------------------------------
 Team 2, Adventure Squad
+
 Contributors 
+
 Names: Mae Chen, Andrew Truong, Noah Rose, Wenbo Zhang, Emmy Wolf
+
 GitHub Usernames: @maechen, @atruong7-bot, @noro8514, @wenzh96, @emmy-wolf
+
 Emails: mach6290@colorado.edu, antr3219@colorado.edu, noro8514@colorado.edu, wezh6400@colorado.edu, mawo7163@colorado.edu
