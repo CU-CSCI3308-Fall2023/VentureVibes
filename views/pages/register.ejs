@@ -1,9 +1,22 @@
-<form action="/register" method="POST">
-    <label for="username">Username</label>
-    <input name="username" type="text" id="username"/>
+<%- include ('../partials/header') %>
+	<%- include ('../partials/menu') %>
+		<main>
+			<div class="container">
+				<form action="/register" method="POST">
+				<div class="mb-3">
+					<label for="username">Username</label>
+					<input class="form-control" name="username" type="text" id="username"/>
+					</div>
+					<div class="mb-3">
+					<label for="password">Password</label>
+					<input class="form-control" type="text" name="password" id="password"/>
+					<p class ="form-text" align="right">
+					Already have an account? <a href="/login">Login</a>
+					</p>
+					</div>
+					<button type="submit" class="btn btn-primary">Register</button>
 
-    <label for="password">Password</label>
-    <input type="text" name="password" id="password"/>
-    
-    <button type="submit">Register</button>
-</form>
+				</form>
+			</div>
+		</main>
+		<%- include ('../partials/footer') %>

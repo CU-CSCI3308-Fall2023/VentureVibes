@@ -1,16 +1,26 @@
-<%- include ('../partials/head') %>
+<%- include ('../partials/header') %>
 <%- include ('../partials/menu') %>
 <main>
   <div class="container">
     <!-- THE REST OF YOUR HTML CODE GOES HERE -->
     <form action="/login" method="POST">
-        <label for="username">Username</label>
-        <input name="username" type="text" id="username"/>
-    
-        <label for="password">Password</label>
-        <input type="text" name="password" id="password"/>
-        <button type="submit">Login</button>
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input class="form-control" name="username" type="text" id="username"/>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input class="form-control" type="text" name="password" id="password"/>
+            
+            <p class ="form-text" align="right">
+            Need an account? <a href="/register">Register</a>
+            </p>
+        </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+        
     </form>
+    
   </div>
 </main>
 <%- include ('../partials/footer') %>

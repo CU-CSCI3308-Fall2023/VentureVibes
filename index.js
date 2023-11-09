@@ -51,9 +51,21 @@ app.use(
 // <!-- Section 4 : API Routes -->
 // *****************************************************
 // TODO - Include your API routes here
-
-
-
+app.get("/", (req, res) => {
+  res.redirect("/login");
+});
+app.get('/login', (req, res) => {
+  res.render('pages/login');
+});
+app.get('/register', (req, res) => {
+  res.render('pages/register');
+});
+app.get('/mytrips', (req, res) => {
+  res.render('pages/mytrips');
+});
+app.get('/discover', (req, res) => {
+  res.render('pages/discover');
+});
 
 // Authentication Middleware.
 const auth = (req, res, next) => {
