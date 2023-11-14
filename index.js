@@ -64,7 +64,34 @@ app.get('/mytrips', (req, res) => {
   res.render('pages/mytrips');
 });
 app.get('/discover', (req, res) => {
-  res.render('pages/discover');
+  var test = null;
+  res.render('pages/discover', {test,});
+});
+app.get('/discoverData', async (req,res) => {
+  axios({
+    url: `https://api.content.tripadvisor.com/api/v1/location/nearby_search?language=en`,
+    method: 'GET',
+    dataType: 'json',
+    headers: {
+      'Accept-Encoding': 'application/json',
+    },
+    params: {
+      key: process.env.ADVISOR_KEY,
+      latLong: `${req.query.latitude},${req.query.longitude}`, //you can choose any artist/event here
+      radius: '10',
+      radiusUnit: 'mi'
+    },
+  })
+    .then(results => {
+      console.log(req.query.latitude); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
+      console.log(req.query.longitude);
+      var test = results.data;
+      return res.render("pages/discover", {test,});
+    })
+    .catch(error => {
+      // Handle errors
+      console.log(error);
+    });
 });
 
 // Authentication Middleware.
