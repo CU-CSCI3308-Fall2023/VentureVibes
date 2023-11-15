@@ -39,7 +39,7 @@ describe("Server!", () => {
     });
 
     //We are checking POST /add_user API by passing the user info in in incorrect manner (name cannot be an integer). This test case should pass and return a status 200 along with a "Invalid input" message.
-    it("Negative : /add_user. Checking invalid name", (done) => {
+    it("Negative : /login. Checking invalid name", (done) => {
         chai.request(server)
             .post("/login")
             .send({ username: 10, password: "2020-02-20" })

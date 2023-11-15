@@ -94,6 +94,55 @@ app.get('/discoverData', async (req,res) => {
     });
 });
 
+app.post("/login", async (req, res) => {
+    try {
+        const username = req.body.username;
+
+        if (/^\d+$/.test(username)) {
+            res.json({ status: "success", message: "Invalid input" });
+            return res.render("pages/login", {
+                message: "Invalid Username",
+            });
+        }
+        const userData = await db.query(
+            "SELECT * FROM users WHERE username = $1",
+            [username]
+        );
+
+        if (userData.length === 0) {
+            // If the user is not found, redirect to GET /register route
+            return res.redirect("/register");
+        }
+
+        const user = userData[0];
+
+        if (req.body.password != user.password) {
+            res.json({ status: "success", message: "Success" });
+            // If the password is incorrect, throw an error
+            return res.render("pages/login", {
+                message: "Invalid Input",
+            });
+        }
+
+        // Set the session for the logged-in user
+        req.session.user = user;
+        req.session.save();
+        res.json({ status: "success", message: "Success" });
+        // Redirect to /discover route after setting the session
+        res.redirect("/discover");
+    } catch (error) {
+        // If the database request fails, send an appropriate message to the user and render the login.ejs page
+        res.json({ status: "success", message: "Success" });
+        res.render("pages/login", {
+            message: "Invalid Input",
+        });
+    }
+});
+
+app.get("/welcome", (req, res) => {
+    res.json({ status: "success", message: "Welcome!" });
+});
+
 // Authentication Middleware.
 const auth = (req, res, next) => {
   if (!req.session.user) {
@@ -108,5 +157,6 @@ app.use(auth);
 // <!-- Section 5 : Start Server-->
 // *****************************************************
 // starting the server and keeping the connection open to listen for more requests
-app.listen(3000);
+//app.listen(3000);
+module.exports = app.listen(3000);
 console.log('Server is listening on port 3000');
