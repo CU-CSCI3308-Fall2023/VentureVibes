@@ -25,7 +25,7 @@ describe("Server!", () => {
     // ===========================================================================
     // TO-DO: Part A Login unit test case
 
-    //We are checking POST /add_user API by passing the user info in the correct order. This test case should pass and return a status 200 along with a "Success" message.
+    //We are checking POST /login API by passing the user info in the correct order. This test case should pass and return a status 200 along with a "Success" message.
     //Positive cases
     it("positive : /login", (done) => {
         chai.request(server)
@@ -38,11 +38,36 @@ describe("Server!", () => {
             });
     });
 
-    //We are checking POST /add_user API by passing the user info in in incorrect manner (name cannot be an integer). This test case should pass and return a status 200 along with a "Invalid input" message.
+    //We are checking POST /login API by passing the user info in in incorrect manner (name cannot be an integer). This test case should pass and return a status 200 along with a "Invalid input" message.
     it("Negative : /login. Checking invalid name", (done) => {
         chai.request(server)
             .post("/login")
             .send({ username: 10, password: "2020-02-20" })
+            .end((err, res) => {
+                expect(res).to.have.status(200);
+                expect(res.body.message).to.equals("Invalid input");
+                done();
+            });
+    });
+
+    //We are checking GET /discoverData API by passing the lattitude and longitude info in the correct data type (decimal). This test case should pass and return a status 200 along with a "Success" message.
+    //Positive cases
+    it("positive : /discoverData", (done) => {
+        chai.request(server)
+            .get("/discoverData")
+            .send({ latitude: 10, longitude: 10 })
+            .end((err, res) => {
+                expect(res).to.have.status(200);
+                expect(res.body.message).to.equals("Invalid input");
+                done();
+            });
+    });
+
+    //We are checking GET /discoverData API by passing the latitude and longitude info in in incorrect manner (info cannot be a string). This test case should pass and return a status 200 along with a "Invalid input" message.
+    it("Negative : /discoverData. Checking invalid lat and long", (done) => {
+        chai.request(server)
+            .get("/discoverData")
+            .send({ latitude: "ten", longitude: "ten" })
             .end((err, res) => {
                 expect(res).to.have.status(200);
                 expect(res.body.message).to.equals("Invalid input");

@@ -68,6 +68,17 @@ app.get('/discover', (req, res) => {
   res.render('pages/discover', {test,});
 });
 app.get('/discoverData', async (req,res) => {
+  const latitude = parseFloat(req.query.latitude);
+  const longitude = parseFloat(req.query.longitude);
+
+  if (isNaN(latitude) || isNaN(longitude)) {
+    res.json({ status: "success", message: "Invalid input" });
+    return res.render("pages/discover", {
+        message: "Please enter latitude and longitude as decimals",
+    });
+  }
+
+  res.json({ status: "success", message: "Success" });
   axios({
     url: `https://api.content.tripadvisor.com/api/v1/location/nearby_search?language=en`,
     method: 'GET',
@@ -77,7 +88,7 @@ app.get('/discoverData', async (req,res) => {
     },
     params: {
       key: process.env.ADVISOR_KEY,
-      latLong: `${req.query.latitude},${req.query.longitude}`, //you can choose any artist/event here
+      latLong: `${req.query.latitude},${req.query.longitude}`, 
       radius: '10',
       radiusUnit: 'mi'
     },
@@ -101,9 +112,10 @@ app.post("/login", async (req, res) => {
         if (/^\d+$/.test(username)) {
             res.json({ status: "success", message: "Invalid input" });
             return res.render("pages/login", {
-                message: "Invalid Username",
+                message: "Invalid input",
             });
         }
+
         const userData = await db.query(
             "SELECT * FROM users WHERE username = $1",
             [username]
@@ -117,10 +129,10 @@ app.post("/login", async (req, res) => {
         const user = userData[0];
 
         if (req.body.password != user.password) {
-            res.json({ status: "success", message: "Success" });
+            res.json({ status: "success", message: "Invalid input" });
             // If the password is incorrect, throw an error
             return res.render("pages/login", {
-                message: "Invalid Input",
+                message: "Invalid input",
             });
         }
 
