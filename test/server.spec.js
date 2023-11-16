@@ -31,7 +31,7 @@ describe("Server!", () => {
         chai.request(server)
             .post("/login")
             .send({ username: "andy", password: "test" })
-            .end((err, res) => {
+            .end((err, res) => {gi
                 expect(res).to.have.status(200);
                 done();
             });
