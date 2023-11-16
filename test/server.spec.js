@@ -30,7 +30,7 @@ describe("Server!", () => {
     it("positive : /login", (done) => {
         chai.request(server)
             .post("/login")
-            .send({ username: "mae", password: "test" })
+            .send({ username: "andy", password: "test" })
             .end((err, res) => {
                 expect(res).to.have.status(200);
                 done();
