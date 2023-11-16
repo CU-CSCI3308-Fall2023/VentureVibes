@@ -1,5 +1,6 @@
 <%- include ('../partials/header') %>
 <%- include ('../partials/menu') %>
+<%- include ('../partials/message') %>
 <main>
 	<div class="container">
 		<table>
@@ -7,12 +8,12 @@
                 <th>Activities</th>
                 <th>Distance from your location</th>
             </tr>
-            <%if(test != null){test.data.forEach(function(data){%>
-            <tr>
-                <td><%-data.name%></td>
-                <td><%-data.distance%></td>
-            </tr>
-            <%})}%>
+            <%data.forEach((event) => { %>
+                <tr>
+                    <td><%-event.name%></td>
+                    <td><%-event.distance%></td>
+                </tr>
+            <%})%>
         </table>
 
 		<form action="/discoverData" method="GET">
