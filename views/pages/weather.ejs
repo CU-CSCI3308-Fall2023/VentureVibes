@@ -1,0 +1,29 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/menu') %>
+<main>
+	<div class="container">
+		<table class="table">
+            <tr>
+                <th>Weather</th>
+                <th>Temperature (F)</th>
+            </tr>
+            <%if(test != null){test.list.forEach(function(data){%>
+            <tr>
+                <td><%-data.weather[0].main%></td>
+                <td><%-data.main.temp%></td>
+            </tr>
+            <%})}%>
+        </table>
+
+		<form action="/weatherData" method="GET">
+			<label for="Latitude">Latitude</label>
+			<input name="latitude" type="text" id="latitude"/>
+		
+			<label for="Longitude">Longitude</label>
+			<input type="text" name="longitude" id="longitude"/>
+			
+			<button type="submit">Find</button>
+		</form>
+    </div>
+
+</main>
