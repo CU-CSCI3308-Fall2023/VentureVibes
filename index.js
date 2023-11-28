@@ -13,22 +13,22 @@ const axios = require("axios"); // To make HTTP requests from our server. We'll 
 // *****************************************************
 // database configuration
 const dbConfig = {
-    host: "db", // the database server
-    port: 5432, // the database port
-    database: process.env.POSTGRES_DB, // the database name
-    user: process.env.POSTGRES_USER, // the user account to connect with
-    password: process.env.POSTGRES_PASSWORD, // the password of the user account
+  host: "db", // the database server
+  port: 5432, // the database port
+  database: process.env.POSTGRES_DB, // the database name
+  user: process.env.POSTGRES_USER, // the user account to connect with
+  password: process.env.POSTGRES_PASSWORD, // the password of the user account
 };
 const db = pgp(dbConfig);
 // test your database
 db.connect()
-    .then((obj) => {
-        console.log("Database connection successful"); // you can view this message in the docker compose logs
-        obj.done(); // success, release the connection;
-    })
-    .catch((error) => {
-        console.log("ERROR:", error.message || error);
-    });
+.then((obj) => {
+  console.log("Database connection successful"); // you can view this message in the docker compose logs
+  obj.done(); // success, release the connection;
+})
+.catch((error) => {
+  console.log("ERROR:", error.message || error);
+});
 // *****************************************************
 // <!-- Section 3 : App Settings -->
 // *****************************************************
@@ -36,13 +36,17 @@ app.set("view engine", "ejs"); // set the view engine to EJS
 app.use(bodyParser.json()); // specify the usage of JSON for parsing request body.
 // initialize session variables
 app.use(
-    session({
-        secret: process.env.SESSION_SECRET,
-        saveUninitialized: false,
-        resave: false,
-    })
-);
-app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    saveUninitialized: false,
+    resave: false,
+  })
+  );
+  app.use(function (req, res, next) {
+      res.locals.user = req.session.user;
+      next();
+  });
+  app.use(
     bodyParser.urlencoded({
         extended: true,
     })
@@ -60,55 +64,22 @@ app.get("/login", (req, res) => {
 app.get("/register", (req, res) => {
     res.status(202).render("pages/register");
 });
-app.get("/mytrips", (req, res) => {
-    res.render("pages/mytrips");
-});
-app.get("/discover", (req, res) => {
-    res.status(200).render("pages/discover", { data: [] });
-});
-app.get("/discoverData", async (req, res) => {
-    const latitude = req.query.latitude;
-    const longitude = req.query.longitude;
 
-    if (isNaN(latitude) || isNaN(longitude)) {
-        // res.set('Content-Type', 'application/json');
-        return res.status(404).render("pages/discover", {
-            data: [],
-            status: "success",
-            message: "Invalid input",
-        });
+app.post("/register", async (req, res) => {
+    //hash the password using bcrypt library
+    const username = req.body.username;
+    const password = req.body.password;
+
+    // To-DO: Insert username and hashed password into 'users' table
+    try {
+        const insert = await db.query(
+            "INSERT into users(username, password) VALUES ($1, $2) ON CONFLICT DO NOTHING;",
+            [username, password]
+        );
+        res.redirect("/login");
+    } catch (error) {
+        res.redirect("/register");
     }
-
-    axios({
-        url: `https://api.content.tripadvisor.com/api/v1/location/nearby_search?language=en`,
-        method: "GET",
-        dataType: "json",
-        headers: {
-            "Accept-Encoding": "application/json",
-        },
-        params: {
-            key: process.env.ADVISOR_KEY,
-            latLong: `${req.query.latitude},${req.query.longitude}`,
-            radius: "10",
-            radiusUnit: "mi",
-        },
-    })
-        .then((results) => {
-            return res.status(200).render("pages/discover", {
-                data: results.data.data,
-                status: "success",
-                message: "Success",
-            });
-        })
-        .catch((error) => {
-            // Handle errors
-            console.log(error);
-            return res.status(400).render("pages/discover", {
-                data: [],
-                status: "ERROR",
-                message: "ERROR",
-            });
-        });
 });
 
 app.post("/login", async (req, res) => {
@@ -144,6 +115,51 @@ app.post("/login", async (req, res) => {
       });
     }
   });
+
+  app.get("/discoverData", async (req, res) => {
+      const latitude = req.query.latitude;
+      const longitude = req.query.longitude;
+
+      if (isNaN(latitude) || isNaN(longitude)) {
+          // res.set('Content-Type', 'application/json');
+          return res.status(404).render("pages/discover", {
+              data: [],
+              status: "success",
+              message: "Invalid input",
+          });
+      }
+
+      axios({
+          url: `https://api.content.tripadvisor.com/api/v1/location/nearby_search?language=en`,
+          method: "GET",
+          dataType: "json",
+          headers: {
+              "Accept-Encoding": "application/json",
+          },
+          params: {
+              key: process.env.ADVISOR_KEY,
+              latLong: `${req.query.latitude},${req.query.longitude}`,
+              radius: "10",
+              radiusUnit: "mi",
+          },
+      })
+          .then((results) => {
+              return res.status(200).render("pages/discover", {
+                  data: results.data.data,
+                  status: "success",
+                  message: "Success",
+              });
+          })
+          .catch((error) => {
+              // Handle errors
+              console.log(error);
+              return res.status(400).render("pages/discover", {
+                  data: [],
+                  status: "ERROR",
+                  message: "ERROR",
+              });
+          });
+  });
   
   app.get("/welcome", (req, res) => {
     res.json({ status: "success", message: "Welcome!" });
@@ -158,6 +174,18 @@ app.post("/login", async (req, res) => {
     next();
 };// Authentication Required
 app.use(auth);
+
+app.get("/mytrips", (req, res) => {
+    res.render("pages/mytrips");
+});
+app.get("/discover", (req, res) => {
+    res.status(200).render("pages/discover", { data: [] });
+
+ app.get("/logout", (req, res) => {
+     req.session.destroy();
+     res.redirect("/login");
+ });
+});
 // *****************************************************
 // <!-- Section 5 : Start Server-->
 // *****************************************************
