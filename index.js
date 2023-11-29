@@ -71,10 +71,8 @@ const user_trips = `
 // TODO - Include your API routes here
 app.get("/", (req, res) => {
     res.redirect("/login");
-    res.redirect("/login");
 });
-app.get("/login", (req, res) => {
-    res.render("pages/login");
+
 app.get("/login", (req, res) => {
     res.render("pages/login");
 });
@@ -99,96 +97,96 @@ app.post("/register", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-  try {
-    const username = req.body.username;
-    const userData = await db.query(
-      "SELECT * FROM users WHERE username = $1",
-      [username]
-      );
-      
-      if (userData.length === 0) {
-        // If the user is not found, redirect to GET /register route
-        return res.redirect("/register");
-      }
-      const user = userData[0];
-      if (req.body.password != user.password) {
-        // If the password is incorrect, throw an error
-        return res.render("pages/login", {
-          status: "success",
-          message: "Invalid input",
-        });
-      }
+    try {
+        const username = req.body.username;
+        const userData = await db.query(
+            "SELECT * FROM users WHERE username = $1",
+            [username]
+        );
 
-      req.session.user = user;
-      req.session.save();
-      
-      return res.redirect("/discover");
+        if (userData.length === 0) {
+            // If the user is not found, redirect to GET /register route
+            return res.redirect("/register");
+        }
+        const user = userData[0];
+        if (req.body.password != user.password) {
+            // If the password is incorrect, throw an error
+            return res.render("pages/login", {
+                status: "success",
+                message: "Invalid input",
+            });
+        }
+
+        req.session.user = user;
+        req.session.save();
+
+        return res.redirect("/discover");
     } catch (error) {
-      // If the database request fails, send an appropriate message to the user and render the login.ejs page
-      return res.render("pages/login", {
-        status: "success",
-        message: "Invalid input",
-      });
+        // If the database request fails, send an appropriate message to the user and render the login.ejs page
+        return res.render("pages/login", {
+            status: "success",
+            message: "Invalid input",
+        });
     }
-  });
+});
 
-  app.get("/discoverData", async (req, res) => {
-      const latitude = req.query.latitude;
-      const longitude = req.query.longitude;
+app.get("/discoverData", async (req, res) => {
+    const latitude = req.query.latitude;
+    const longitude = req.query.longitude;
 
-      if (isNaN(latitude) || isNaN(longitude)) {
-          // res.set('Content-Type', 'application/json');
-          return res.status(404).render("pages/discover", {
-              data: [],
-              status: "success",
-              message: "Invalid input",
-          });
-      }
+    if (isNaN(latitude) || isNaN(longitude)) {
+        // res.set('Content-Type', 'application/json');
+        return res.status(404).render("pages/discover", {
+            data: [],
+            status: "success",
+            message: "Invalid input",
+        });
+    }
 
-      axios({
-          url: `https://api.content.tripadvisor.com/api/v1/location/nearby_search?language=en`,
-          method: "GET",
-          dataType: "json",
-          headers: {
-              "Accept-Encoding": "application/json",
-          },
-          params: {
-              key: process.env.ADVISOR_KEY,
-              latLong: `${req.query.latitude},${req.query.longitude}`,
-              radius:`${req.query.radius}`,
-              radiusUnit: "mi",
-          },
-      })
-          .then((results) => {
-              return res.status(200).render("pages/discover", {
-                  data: results.data.data,
-                  status: "success",
-                  message: "Success",
-              });
-          })
-          .catch((error) => {
-              // Handle errors
-              console.log(error);
-              return res.status(400).render("pages/discover", {
-                  data: [],
-                  status: "ERROR",
-                  message: "ERROR",
-              });
-          });
-  });
-  
-  app.get("/welcome", (req, res) => {
+    axios({
+        url: `https://api.content.tripadvisor.com/api/v1/location/nearby_search?language=en`,
+        method: "GET",
+        dataType: "json",
+        headers: {
+            "Accept-Encoding": "application/json",
+        },
+        params: {
+            key: process.env.ADVISOR_KEY,
+            latLong: `${req.query.latitude},${req.query.longitude}`,
+            radius: `${req.query.radius}`,
+            radiusUnit: "mi",
+        },
+    })
+        .then((results) => {
+            return res.status(200).render("pages/discover", {
+                data: results.data.data,
+                status: "success",
+                message: "Success",
+            });
+        })
+        .catch((error) => {
+            // Handle errors
+            console.log(error);
+            return res.status(400).render("pages/discover", {
+                data: [],
+                status: "ERROR",
+                message: "ERROR",
+            });
+        });
+});
+
+app.get("/welcome", (req, res) => {
     res.json({ status: "success", message: "Welcome!" });
-  });
-  
-  // Authentication Middleware.
-  const auth = (req, res, next) => {
+});
+
+// Authentication Middleware.
+const auth = (req, res, next) => {
     if (!req.session.user) {
         // Default to login page.
         return res.redirect("/login");
     }
     next();
-};// Authentication Required
+}; // Authentication Required
 app.use(auth);
 
 app.get("/mytrips", (req, res) => {
@@ -200,26 +198,26 @@ app.get("/discover", (req, res) => {
 app.get("/trips", (req, res) => {
     const added = req.query.added;
     // Query to list all the courses taken by a student
-  if (added) {
-      db.any(user_trips, [req.session.user[0]])
-          .then((trips) => {
-              res.render("pages/mytrips", {
-                  trips
-              });
-          })
-          .catch((err) => {
-              res.render("pages/mytrips", {
-                  trips: [],
-                  error: true,
-                  message: err.message,
-              });
-          });
-  } else {
-      // Do nothing or handle the case where added is not true
-      res.render("pages/mytrips", {
-          trips: [] // You might want to pass an empty array or handle it as needed
-      });
-  }
+    if (added) {
+        db.any(user_trips, [req.session.user[0]])
+            .then((trips) => {
+                res.render("pages/mytrips", {
+                    trips,
+                });
+            })
+            .catch((err) => {
+                res.render("pages/mytrips", {
+                    trips: [],
+                    error: true,
+                    message: err.message,
+                });
+            });
+    } else {
+        // Do nothing or handle the case where added is not true
+        res.render("pages/mytrips", {
+            trips: [], // You might want to pass an empty array or handle it as needed
+        });
+    }
 });
 
 app.post("/discover/add", async (req, res) => {
@@ -301,10 +299,9 @@ app.post("/trips/delete", async (req, res) => {
     }
 });
 
- app.get("/logout", (req, res) => {
-     req.session.destroy();
-     res.redirect("/login");
- });
+app.get("/logout", (req, res) => {
+    req.session.destroy();
+    res.redirect("/login");
 });
 // *****************************************************
 // <!-- Section 5 : Start Server-->
