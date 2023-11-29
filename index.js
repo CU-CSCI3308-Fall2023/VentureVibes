@@ -51,6 +51,19 @@ app.use(
         extended: true,
     })
 );
+
+const user_trips = `
+  SELECT DISTINCT
+    trips.trip_id,
+    trips.start_date,
+    trips.end_date,
+    users.username = $1 AS "added"
+  FROM
+    users
+    JOIN trips ON users.user_id = trips.user_id
+    JOIN activities ON activities.trip_id = trips.trip_id
+  WHERE users.username = $1`;
+
 // *****************************************************
 // <!-- Section 4 : API Routes -->
 // *****************************************************
@@ -66,7 +79,6 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
-    //hash the password using bcrypt library
     const username = req.body.username;
     const password = req.body.password;
 
@@ -102,7 +114,7 @@ app.post("/login", async (req, res) => {
           message: "Invalid input",
         });
       }
-      // Set the session for the logged-in user
+
       req.session.user = user;
       req.session.save();
       
@@ -139,7 +151,7 @@ app.post("/login", async (req, res) => {
           params: {
               key: process.env.ADVISOR_KEY,
               latLong: `${req.query.latitude},${req.query.longitude}`,
-              radius: "10",
+              radius:`${req.query.radius}`,
               radiusUnit: "mi",
           },
       })
@@ -180,6 +192,110 @@ app.get("/mytrips", (req, res) => {
 });
 app.get("/discover", (req, res) => {
     res.status(200).render("pages/discover", { data: [] });
+
+app.get("/trips", (req, res) => {
+    const added = req.query.added;
+    // Query to list all the courses taken by a student
+  if (added) {
+      db.any(user_trips, [req.session.user[0]])
+          .then((trips) => {
+              res.render("pages/mytrips", {
+                  trips
+              });
+          })
+          .catch((err) => {
+              res.render("pages/mytrips", {
+                  trips: [],
+                  error: true,
+                  message: err.message,
+              });
+          });
+  } else {
+      // Do nothing or handle the case where added is not true
+      res.render("pages/mytrips", {
+          trips: [] // You might want to pass an empty array or handle it as needed
+      });
+  }
+});
+
+app.post("/discover/add", async (req, res) => {
+    try {
+        const activityTitle = req.body.activity_title;
+        const description = req.body.description;
+        const location = req.body.location;
+        const startDate = req.body.start_date;
+        const endDate = req.body.end_date;
+
+        // Fetch user_id based on the username in the session
+        const user = await db.one(
+            "SELECT user_id FROM users WHERE username = $1;",
+            [req.session.user.username]
+        );
+
+        const userId = user.user_id;
+
+        // Insert the trip
+        const tripResult = await db.one(
+            "INSERT INTO trips(user_id, start_date, end_date) VALUES ($1, $2, $3) RETURNING trip_id;",
+            [userId, startDate, endDate]
+        );
+
+        const tripId = tripResult.trip_id;
+
+        // Insert the activity using the obtained trip_id
+        await db.none(
+            "INSERT INTO activities(trip_id, title, description, location) VALUES ($1, $2, $3, $4);",
+            [tripId, activityTitle, description, location]
+        );
+
+        // Render the "discover" page with a success message
+        res.render("pages/discover", {
+            message: `Successfully added ${activityTitle} to MyTrips`,
+            action: "add",
+        });
+    } catch (err) {
+        res.render("pages/discover", {
+            error: true,
+            message: err.message,
+        });
+    }
+});
+
+app.post("/trips/delete", async (req, res) => {
+    try {
+        // Fetch user_id based on the username in the session
+        const user = await db.one(
+            "SELECT user_id FROM users WHERE username = $1;",
+            [req.session.user.username]
+        );
+
+        const userId = user.user_id;
+
+        // Perform the deletion and fetch updated list of trips
+        const [, trips] = await db.task("delete-activity", (task) => {
+            return task.batch([
+                task.none(
+                    `DELETE FROM activities
+                    WHERE user_id = $1 AND title = $2;`,
+                    [userId, req.body.activity_title]
+                ),
+                task.any(user_trips, [userId]),
+            ]);
+        });
+
+        res.render("pages/mytrips", {
+            trips,
+            message: `Successfully removed activity ${req.body.activity_title}`,
+            action: "delete",
+        });
+    } catch (err) {
+        res.render("pages/mytrips", {
+            trips: [],
+            error: true,
+            message: err.message,
+        });
+    }
+});
 
  app.get("/logout", (req, res) => {
      req.session.destroy();
