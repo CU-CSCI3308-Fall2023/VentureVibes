@@ -196,6 +196,7 @@ app.get("/mytrips", (req, res) => {
 });
 app.get("/discover", (req, res) => {
     res.status(200).render("pages/discover", { data: [] });
+});
 
 app.get("/trips", (req, res) => {
     const added = req.query.added;
