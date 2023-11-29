@@ -33,6 +33,7 @@ db.connect()
 // <!-- Section 3 : App Settings -->
 // *****************************************************
 app.set("view engine", "ejs"); // set the view engine to EJS
+app.set("view engine", "ejs"); // set the view engine to EJS
 app.use(bodyParser.json()); // specify the usage of JSON for parsing request body.
 // initialize session variables
 app.use(
@@ -70,7 +71,10 @@ const user_trips = `
 // TODO - Include your API routes here
 app.get("/", (req, res) => {
     res.redirect("/login");
+    res.redirect("/login");
 });
+app.get("/login", (req, res) => {
+    res.render("pages/login");
 app.get("/login", (req, res) => {
     res.render("pages/login");
 });

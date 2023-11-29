@@ -26,8 +26,8 @@ Team 2, Adventure Squad
 
 Contributors 
 
-Names: Mae Chen, Andrew Truong, Noah Rose, Wenbo Zhang, Emmy Wolf
+Names: Mae Chen, Noah Rose, Wenbo Zhang, Emmy Wolf, Andrew Truong
 
-GitHub Usernames: @maechen, @atruong7-bot, @noro8514, @wenzh96, @emmy-wolf
+GitHub Usernames: @maechen, @noro8514, @wenzh96, @emmy-wolf, @atruong7-bot
 
-Emails: mach6290@colorado.edu, antr3219@colorado.edu, noro8514@colorado.edu, wezh6400@colorado.edu, mawo7163@colorado.edu
+Emails: mach6290@colorado.edu, noro8514@colorado.edu, wezh6400@colorado.edu, mawo7163@colorado.edu, antr3219@colorado.edu,
