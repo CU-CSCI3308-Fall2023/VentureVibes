@@ -53,7 +53,7 @@ describe("Server!", () => {
     it("positive : /discoverData", (done) => {
         chai.request(server)
             .get("/discoverData")
-            .query({ latitude: 10, longitude: 10 })
+            .query({ latitude: 10, longitude: 10, radius: 10})
             .end((err, res) => {
                 expect(res).to.have.status(200);
                 // expect(res.body.message).to.equals("Success");
@@ -65,7 +65,7 @@ describe("Server!", () => {
     it("Negative : /discoverData. Checking invalid lat and long", (done) => {
         chai.request(server)
             .get("/discoverData")
-            .query({ latitude: "ten", longitude: "ten" })
+            .query({ latitude: "ten", longitude: "ten", radius: 10 })
             .end((err, res) => {
                 // console.log(res.body)
                 expect(res).to.have.status(404);

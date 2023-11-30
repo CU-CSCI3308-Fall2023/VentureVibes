@@ -1,8 +1,9 @@
 <%- include ('../partials/header') %>
-	<%- include ('../partials/menu') %>
+	<!-- <%- include ('../partials/menu') %> -->
+	<%- include ('../partials/message') %>
 		<main>
 			<div class="container">
-				<form action="/register" method="POST">
+				<!-- <form action="/register" method="POST">
 				<div class="mb-3">
 					<label for="username">Username</label>
 					<input class="form-control" name="username" type="text" id="username"/>
@@ -17,6 +18,60 @@
 					<button type="submit" class="btn btn-primary">Register</button>
 
 				</form>
+			</div> -->
+
+			<section class="text-center">
+				<!-- Background image -->
+				<div class="p-5 bg-image" style="
+				  background-image: url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwcHBwcHBwcHBwcHBwoHBwcHBw8ICQcWIBEiIiARExMYHSggGBolGx8fITEhJSkrLi4uFx8zODMsNygtLisBCgoKBQUFDgUFDisZExkrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrK//AABEIAKgBKwMBIgACEQEDEQH/xAAVAAEBAAAAAAAAAAAAAAAAAAAABv/EABQQAQAAAAAAAAAAAAAAAAAAAAD/xAAVAQEBAAAAAAAAAAAAAAAAAAAABv/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AJQBNpEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB//9k=');
+				  height: 230px;
+				  "><h1 class="text-white" style = "height: 10px; font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;" >Venture Vibes</h1>
+				  </div>
+				<!-- Background image -->
+			  
+				<div class="card mx-4 mx-md-5 shadow-5-strong" style="
+					  margin-top: -100px;
+					  background: hsla(0, 0%, 100%, 0.8);
+					  backdrop-filter: blur(20px);
+					  ">
+				  <div class="card-body py-5 px-md-5">
+			  
+					<div class="row d-flex justify-content-center">
+					  <div class="col-lg-8" >
+						<h2 class="fw-bold mb-5">Register</h2>
+						<form action="/register" method="POST">
+						  <!-- 2 column grid layout with text inputs for the first and last names -->
+			  
+						  <!-- Email input -->
+						  <div class="form-outline mb-4" >
+							<label for="username" class="form-label">Username</label>
+							<input class="form-control" name="username" type="text" id="username"/>
+						  </div>
+			  
+						  <!-- Password input -->
+						  <div class="form-outline mb-4">
+							<label for="password" class="form-label">Password</label>
+							<input class="form-control" type="text" name="password" id="password"/>
+							
+							<p class ="form-text" align="right">
+							Already have an account? <a href="/login">Login</a>
+							</p>
+						  </div>
+			
+						  <!-- Submit button -->
+						  <button type="submit" class="btn btn-primary btn-block mb-4">
+							Register
+						  </button>
+			  
+						</form>
+					  </div>
+					</div>
+				  </div>
+				</div>
+			  </section>
+			  <!-- Section: Design Block -->
+
 			</div>
+
 		</main>
 		<%- include ('../partials/footer') %>
