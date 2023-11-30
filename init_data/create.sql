@@ -6,6 +6,16 @@ CREATE TABLE users(
 );
 INSERT into users (username, password) VALUES ('mae', 'test') ON CONFLICT DO NOTHING;
 
+DROP TABLE IF EXISTS discovered CASCADE;
+CREATE TABLE discovered (
+    lat FLOAT  NOT NULL,
+    long FLOAT NOT NULL,
+    title VARCHAR(255) NOT NULL, -- Title of the activity
+    description TEXT, -- Description of the activity
+    location VARCHAR(255) -- Location of the activity
+    url VARCHAR(255)
+);
+
 -- Drop existing trips and activities tables if they exist, to redefine them with the proper relations
 DROP TABLE IF EXISTS activities CASCADE;
 DROP TABLE IF EXISTS trips CASCADE;
