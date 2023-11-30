@@ -2,5 +2,26 @@
 <%- include ('../partials/menu') %>
 <%- include ('../partials/message') %>
 
-<h1> stuff for myTrips:</h1>
+<h1>myTrips:</h1>
+<div class="container">
+ <table>
+      <tr>
+        <th>Trip Start Date</th>
+        <th>Trip End date</th>
+        
+      </tr>
+      <% trips.forEach(function(trips) { %>
+          <tr>
+                <td><%= trips.start_date %></td>
+                <td><%= trips.end_date %></td>
+                <td>
+                <form action="/trips/delete" method="POST">
+                <input type="hidden" name="trip_id" value="<%= trip_id %>">
+                <input type="submit" value="DELETE">
+                </form>
+                <td>
+          </tr>
+
+      <% }); %>
+</div>
 <%- include ('../partials/footer') %>

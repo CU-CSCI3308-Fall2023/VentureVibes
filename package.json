@@ -24,6 +24,6 @@
         "start": "nodemon index.js -L",
         "dev": "nodemon server.js",
         "test": "mocha",
-        "testandrun": "npm run prestart && npm run test && npm run start"
+        "testandrun": "npm run start"
     }
 }

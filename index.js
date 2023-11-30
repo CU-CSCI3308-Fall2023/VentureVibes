@@ -69,6 +69,7 @@ const user_trips = `
 // <!-- Section 4 : API Routes -->
 // *****************************************************
 // TODO - Include your API routes here
+
 app.get("/", (req, res) => {
     res.redirect("/login");
 });
@@ -189,15 +190,13 @@ const auth = (req, res, next) => {
 }; // Authentication Required
 app.use(auth);
 
-app.get("/mytrips", (req, res) => {
-    res.render("pages/mytrips");
-});
+
 app.get("/discover", (req, res) => {
     res.status(200).render("pages/discover", { data: [] });
 });
 app.get("/trips", (req, res) => {
     const added = req.query.added;
-    // Query to list all the courses taken by a student
+    // 
     if (added) {
         db.any(user_trips, [req.session.user[0]])
             .then((trips) => {
@@ -274,12 +273,55 @@ app.post("/trips/delete", async (req, res) => {
         const userId = user.user_id;
 
         // Perform the deletion and fetch updated list of trips
+        const [, trips] = await db.task("delete-trips", (task) => {
+            return task.batch([
+                //delete sub activities from that trip
+                task.none(
+                    `DELETE FROM activities
+                    WHERE trip_id = $1;`,
+                    [req.body.trip_id]
+                ),
+                //delete trip itself
+                task.none(
+                    `DELETE FROM trips
+                    WHERE user_id = $1 AND trip_id = $2;`,
+                    [userId, req.body.trip_id]
+                ),
+                task.any(user_trips, [userId]),
+            ]);
+        });
+
+        res.render("pages/mytrips", {
+            trips,
+            message: `Successfully removed trip ${req.body.activity_title}`,
+            action: "delete",
+        });
+    } catch (err) {
+        res.render("pages/mytrips", {
+            trips: [],
+            error: true,
+            message: err.message,
+        });
+    }
+});
+
+app.post("/activity/delete", async (req, res) => {
+    try {
+        // Fetch user_id based on the username in the session
+        const user = await db.one(
+            "SELECT user_id FROM users WHERE username = $1;",
+            [req.session.user.username]
+        );
+
+        const userId = user.user_id;
+
+        // Perform the deletion and fetch updated list of trips
         const [, trips] = await db.task("delete-activity", (task) => {
             return task.batch([
                 task.none(
                     `DELETE FROM activities
-                    WHERE user_id = $1 AND title = $2;`,
-                    [userId, req.body.activity_title]
+                    WHERE user_id = $1 AND activity_id = $2;`,
+                    [userId, req.body.activity_id]
                 ),
                 task.any(user_trips, [userId]),
             ]);

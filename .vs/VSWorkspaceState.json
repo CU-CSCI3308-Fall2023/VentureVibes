@@ -1,7 +1,11 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\init_data",
+    "\\views",
+    "\\views\\pages",
+    "\\views\\partials"
   ],
-  "SelectedNode": "\\.env",
+  "SelectedNode": "\\init_data\\create.sql",
   "PreviewInSolutionExplorer": false
 }

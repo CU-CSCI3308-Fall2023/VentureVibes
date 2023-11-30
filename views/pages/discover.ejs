@@ -6,12 +6,24 @@
 		<table>
             <tr>
                 <th>Activities</th>
-                <th>Distance from your location</th>
+                <th>Distance from your location (Miles)</th>
+                <th>Add to this trip</th>
             </tr>
             <%data.forEach((event) => { %>
                 <tr>
                     <td><%-event.name%></td>
                     <td><%-event.distance%></td>
+					<td>
+						<form action=""/discover/add" method="POST">
+                                
+								<input type="hidden" name="activity_title" value="<%=event.name%>">
+                                <input type="hidden" name="description" value="<%=0%>">
+                                <input type="hidden" name="location" value="<%=0%>">
+                                <input type="hidden" name="start_date" value="<%=1000-01-01%>">
+                                <input type="hidden" name="end_date" value="<%=9999-12-31%>">
+                                <input type="submit" value="ADD">
+                        </form>
+					</td>
                 </tr>
             <%})%>
         </table>

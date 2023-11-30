@@ -9,7 +9,15 @@ INSERT into users (username, password) VALUES ('mae', 'test') ON CONFLICT DO NOT
 -- Drop existing trips and activities tables if they exist, to redefine them with the proper relations
 DROP TABLE IF EXISTS activities CASCADE;
 DROP TABLE IF EXISTS trips CASCADE;
-
+DROP TABLE IF EXISTS discovered CASCADE;
+CREATE TABLE discovered (
+    lat FLOAT  NOT NULL,
+    long FLOAT NOT NULL,
+    title VARCHAR(255) NOT NULL, -- Title of the activity
+    description TEXT, -- Description of the activity
+    location VARCHAR(255) -- Location of the activity
+    url VARCHAR(255)
+);
 -- Create the 'trips' table with a reference to the 'users' table
 CREATE TABLE trips (
     trip_id SERIAL PRIMARY KEY, -- A unique ID for each trip
