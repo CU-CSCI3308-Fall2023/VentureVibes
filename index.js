@@ -299,6 +299,37 @@ app.post("/trips/delete", async (req, res) => {
     }
 });
 
+app.get("/weather", (req, res) => {
+    var test = null;
+    res.render("pages/weather", { test });
+});
+app.get("/weatherData", async (req, res) => {
+    axios({
+        url: `https://api.openweathermap.org/data/2.5/forecast`,
+        method: "GET",
+        dataType: "json",
+        headers: {
+            "Accept-Encoding": "application/json",
+        },
+        params: {
+            appid: process.env.WEATHER_KEY,
+            lat: req.query.latitude,
+            lon: req.query.longitude,
+            units: "imperial",
+        },
+    })
+        .then((results) => {
+            console.log(req.query.latitude); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
+            console.log(req.query.longitude);
+            var test = results.data;
+            return res.render("pages/weather", { test });
+        })
+        .catch((error) => {
+            // Handle errors
+            console.log(error);
+        });
+});
+
 app.get("/logout", (req, res) => {
     req.session.destroy();
     res.redirect("/login");
