@@ -129,50 +129,102 @@ app.post("/login", async (req, res) => {
         });
     }
 });
+//Messing with Middleware
+app.use('/api/endpoint1', async (req, res, next) => {
+  try {
+    // Make an API call using Axios to some external API (replace with your actual API endpoint)
+    const response = await axios.get('https://jsonplaceholder.typicode.com/todos/1');
+
+    // Process data as needed
+    const processedData = response.data.title + ' - Processed by Middleware for Endpoint 1';
+
+    // Attach processed data to the request object for use in the next middleware or route handler
+    req.processedData = processedData;
+
+    next(); // Pass control to the next middleware in the stack
+  } catch (error) {
+    console.error('Error in Middleware for Endpoint 1:', error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 app.get("/discoverData", async (req, res) => {
-    const latitude = req.query.latitude;
-    const longitude = req.query.longitude;
+    try {
+        const latitude = parseFloat(req.query.latitude);
+        const longitude = parseFloat(req.query.longitude);
 
-    if (isNaN(latitude) || isNaN(longitude)) {
-        // res.set('Content-Type', 'application/json');
-        return res.status(404).render("pages/discover", {
-            data: [],
-            status: "success",
-            message: "Invalid input",
-        });
-    }
-
-    axios({
-        url: `https://api.content.tripadvisor.com/api/v1/location/nearby_search?language=en`,
-        method: "GET",
-        dataType: "json",
-        headers: {
-            "Accept-Encoding": "application/json",
-        },
-        params: {
-            key: process.env.ADVISOR_KEY,
-            latLong: `${req.query.latitude},${req.query.longitude}`,
-            radius: `${req.query.radius}`,
-            radiusUnit: "mi",
-        },
-    })
-        .then((results) => {
-            return res.status(200).render("pages/discover", {
-                data: results.data.data,
-                status: "success",
-                message: "Success",
-            });
-        })
-        .catch((error) => {
-            // Handle errors
-            console.log(error);
+        if (isNaN(latitude) || isNaN(longitude)) {
             return res.status(400).render("pages/discover", {
                 data: [],
-                status: "ERROR",
-                message: "ERROR",
+                status: "error",
+                message: "Invalid input",
             });
+        }
+
+        const tripAdvisorResults = await axios.get(`https://api.content.tripadvisor.com/api/v1/location/nearby_search`, {
+            params: {
+                key: process.env.ADVISOR_KEY,
+                latLong: `${latitude},${longitude}`,
+                radius: req.query.radius,
+                radiusUnit: "mi",
+                language: "en",
+            },
         });
+
+        if (!tripAdvisorResults.data) {
+            return res.status(500).render("pages/discover", {
+                data: [],
+                status: "error",
+                message: "Internal Server Error",
+            });
+        }
+
+        // Create an array to store the results at each step
+        const resultArray = [];
+
+        for (const key in tripAdvisorResults.data.data) {
+            if (tripAdvisorResults.data.data.hasOwnProperty(key)) {
+                const data = tripAdvisorResults.data.data[key];
+
+                // Second Axios call
+                const specificLocationSearch = await axios.get(`https://api.content.tripadvisor.com/api/v1/location/${data.location_id}/details`, {
+                    params: {
+                        key: process.env.ADVISOR_KEY,
+                    },
+                });
+
+                // Third Axios call
+                const weatherResults = await axios.get(`https://api.openweathermap.org/data/2.5/forecast`, {
+                    params: {
+                        appid: process.env.WEATHER_KEY,
+                        lat: specificLocationSearch.data.latitude,
+                        lon: specificLocationSearch.data.longitude,
+                        units: "imperial",
+                    },
+                });
+
+                console.log(weatherResults.data.list[0].weather[0].main);
+                // Push the result of the second call to the array
+                 if(weatherResults.data.list[0].weather[0].main == req.query.prefWeather){
+                    resultArray.push(specificLocationSearch.data);
+                }
+            }
+        }
+
+        // Now, resultArray contains the results of each step in between the Axios calls
+        return res.status(200).render("pages/discover", {
+            data: resultArray,
+            status: "success",
+            message: "Success",
+        });
+    } catch (error) {
+        console.error('Error:', error.message);
+        return res.status(500).render("pages/discover", {
+            data: [],
+            status: "error",
+            message: "Internal Server Error",
+        });
+    }
 });
 
 app.get("/welcome", (req, res) => {

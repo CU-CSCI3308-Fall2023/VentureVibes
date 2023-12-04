@@ -12,7 +12,7 @@ CREATE TABLE discovered (
     long FLOAT NOT NULL,
     title VARCHAR(255) NOT NULL, -- Title of the activity
     description TEXT, -- Description of the activity
-    location VARCHAR(255) -- Location of the activity
+    location VARCHAR(255), -- Location of the activity
     url VARCHAR(255)
 );
 
