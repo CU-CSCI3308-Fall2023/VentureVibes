@@ -2,9 +2,9 @@ DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users(
     user_id SERIAL PRIMARY KEY,
     username VARCHAR(60) NOT NULL,
-    password VARCHAR(60) NOT NULL
+    password VARCHAR(255) NOT NULL
 );
-INSERT into users (username, password) VALUES ('mae', 'test') ON CONFLICT DO NOTHING;
+INSERT into users (username, password) VALUES ('mae', '$2b$10$kdJixsQGYljp4hHrCqJluu8LLYyqheS5qKgppPg6.zSY5QX2WE0Fe') ON CONFLICT DO NOTHING;
 
 DROP TABLE IF EXISTS discovered CASCADE;
 CREATE TABLE discovered (
@@ -24,8 +24,8 @@ DROP TABLE IF EXISTS trips CASCADE;
 CREATE TABLE trips (
     trip_id SERIAL PRIMARY KEY, -- A unique ID for each trip
     user_id INTEGER NOT NULL REFERENCES users (user_id) ON DELETE CASCADE, -- Foreign key to the 'users' table
-    start_date DATE, -- The start date of the trip
-    end_date DATE -- The end date of the trip
+    start_date VARCHAR(10), -- The start date of the trip
+    end_date VARCHAR(10) -- The end date of the trip
 );
 
 -- Create the 'activities' table with a reference to the 'trips' table

@@ -2,5 +2,44 @@
 <%- include ('../partials/menu') %>
 <%- include ('../partials/message') %>
 
-<h1> stuff for myTrips:</h1>
+<body>
+    <div class="container mt-4">
+        <% if (result && result.length > 0) { %>
+            <% let currentDate = null; %>
+            <% result.forEach(event => { %>
+                <% const startDate = event.start_date; %>
+                <% const endDate = event.end_date; %>
+                <% const dateRange = `${startDate} - ${endDate}`; %>
+
+                <% if (currentDate !== dateRange) { %>
+                    <!-- Date Range Header -->
+                    <div class="mt-4">
+                        <h4><%= dateRange %></h4>
+                    </div>
+                    <% currentDate = dateRange; %>
+                <% } %>
+
+                <!-- Individual Card -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title"><%- event.title %></h5>
+                        <p class="card-text"><%= event.description %></p>
+                        <p class="card-text">City: <%= event.location %></p>
+                        <form action="/trips/delete" method="POST">
+                            <input type="hidden" name="trip_id" value="<%- event.trip_id %>">
+                            <input type="hidden" name="activity_title" value="<%- event.title %>">
+                            <button type="submit" class="btn btn-danger">DELETE</button>
+                        </form>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <!-- No Trips Message -->
+            <div class="mt-4">
+                <h4>Looks like you have no trips yet</h4>
+                <p>Go to discover and add trips</p>
+            </div>
+        <% } %>
+    </div>
+</body>
 <%- include ('../partials/footer') %>

@@ -13,22 +13,22 @@ const axios = require("axios"); // To make HTTP requests from our server. We'll 
 // *****************************************************
 // database configuration
 const dbConfig = {
-  host: "db", // the database server
-  port: 5432, // the database port
-  database: process.env.POSTGRES_DB, // the database name
-  user: process.env.POSTGRES_USER, // the user account to connect with
-  password: process.env.POSTGRES_PASSWORD, // the password of the user account
+    host: "db", // the database server
+    port: 5432, // the database port
+    database: process.env.POSTGRES_DB, // the database name
+    user: process.env.POSTGRES_USER, // the user account to connect with
+    password: process.env.POSTGRES_PASSWORD, // the password of the user account
 };
 const db = pgp(dbConfig);
 // test your database
 db.connect()
-.then((obj) => {
-  console.log("Database connection successful"); // you can view this message in the docker compose logs
-  obj.done(); // success, release the connection;
-})
-.catch((error) => {
-  console.log("ERROR:", error.message || error);
-});
+    .then((obj) => {
+        console.log("Database connection successful"); // you can view this message in the docker compose logs
+        obj.done(); // success, release the connection;
+    })
+    .catch((error) => {
+        console.log("ERROR:", error.message || error);
+    });
 // *****************************************************
 // <!-- Section 3 : App Settings -->
 // *****************************************************
@@ -37,17 +37,17 @@ app.set("view engine", "ejs"); // set the view engine to EJS
 app.use(bodyParser.json()); // specify the usage of JSON for parsing request body.
 // initialize session variables
 app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    saveUninitialized: false,
-    resave: false,
-  })
-  );
-  app.use(function (req, res, next) {
-      res.locals.user = req.session.user;
-      next();
-  });
-  app.use(
+    session({
+        secret: process.env.SESSION_SECRET,
+        saveUninitialized: false,
+        resave: false,
+    })
+);
+app.use(function (req, res, next) {
+    res.locals.user = req.session.user;
+    next();
+});
+app.use(
     bodyParser.urlencoded({
         extended: true,
     })
@@ -86,9 +86,10 @@ app.post("/register", async (req, res) => {
 
     // To-DO: Insert username and hashed password into 'users' table
     try {
+        const hash = bcrypt.hash(password, 10);
         const insert = await db.query(
             "INSERT into users(username, password) VALUES ($1, $2) ON CONFLICT DO NOTHING;",
-            [username, password]
+            [username, hash]
         );
         res.redirect("/login");
     } catch (error) {
@@ -109,7 +110,8 @@ app.post("/login", async (req, res) => {
             return res.redirect("/register");
         }
         const user = userData[0];
-        if (req.body.password != user.password) {
+        const match = bcrypt.compare(req.body.password, user.password);
+        if (!match) {
             // If the password is incorrect, throw an error
             return res.render("pages/login", {
                 status: "success",
@@ -130,22 +132,25 @@ app.post("/login", async (req, res) => {
     }
 });
 //Messing with Middleware
-app.use('/api/endpoint1', async (req, res, next) => {
-  try {
-    // Make an API call using Axios to some external API (replace with your actual API endpoint)
-    const response = await axios.get('https://jsonplaceholder.typicode.com/todos/1');
+app.use("/api/endpoint1", async (req, res, next) => {
+    try {
+        // Make an API call using Axios to some external API (replace with your actual API endpoint)
+        const response = await axios.get(
+            "https://jsonplaceholder.typicode.com/todos/1"
+        );
 
-    // Process data as needed
-    const processedData = response.data.title + ' - Processed by Middleware for Endpoint 1';
+        // Process data as needed
+        const processedData =
+            response.data.title + " - Processed by Middleware for Endpoint 1";
 
-    // Attach processed data to the request object for use in the next middleware or route handler
-    req.processedData = processedData;
+        // Attach processed data to the request object for use in the next middleware or route handler
+        req.processedData = processedData;
 
-    next(); // Pass control to the next middleware in the stack
-  } catch (error) {
-    console.error('Error in Middleware for Endpoint 1:', error.message);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
+        next(); // Pass control to the next middleware in the stack
+    } catch (error) {
+        console.error("Error in Middleware for Endpoint 1:", error.message);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 });
 
 app.get("/discoverData", async (req, res) => {
@@ -161,15 +166,18 @@ app.get("/discoverData", async (req, res) => {
             });
         }
 
-        const tripAdvisorResults = await axios.get(`https://api.content.tripadvisor.com/api/v1/location/nearby_search`, {
-            params: {
-                key: process.env.ADVISOR_KEY,
-                latLong: `${latitude},${longitude}`,
-                radius: req.query.radius,
-                radiusUnit: "mi",
-                language: "en",
-            },
-        });
+        const tripAdvisorResults = await axios.get(
+            `https://api.content.tripadvisor.com/api/v1/location/nearby_search`,
+            {
+                params: {
+                    key: process.env.ADVISOR_KEY,
+                    latLong: `${latitude},${longitude}`,
+                    radius: req.query.radius,
+                    radiusUnit: "mi",
+                    language: "en",
+                },
+            }
+        );
 
         if (!tripAdvisorResults.data) {
             return res.status(500).render("pages/discover", {
@@ -187,25 +195,34 @@ app.get("/discoverData", async (req, res) => {
                 const data = tripAdvisorResults.data.data[key];
 
                 // Second Axios call
-                const specificLocationSearch = await axios.get(`https://api.content.tripadvisor.com/api/v1/location/${data.location_id}/details`, {
-                    params: {
-                        key: process.env.ADVISOR_KEY,
-                    },
-                });
+                const specificLocationSearch = await axios.get(
+                    `https://api.content.tripadvisor.com/api/v1/location/${data.location_id}/details`,
+                    {
+                        params: {
+                            key: process.env.ADVISOR_KEY,
+                        },
+                    }
+                );
 
                 // Third Axios call
-                const weatherResults = await axios.get(`https://api.openweathermap.org/data/2.5/forecast`, {
-                    params: {
-                        appid: process.env.WEATHER_KEY,
-                        lat: specificLocationSearch.data.latitude,
-                        lon: specificLocationSearch.data.longitude,
-                        units: "imperial",
-                    },
-                });
+                const weatherResults = await axios.get(
+                    `https://api.openweathermap.org/data/2.5/forecast`,
+                    {
+                        params: {
+                            appid: process.env.WEATHER_KEY,
+                            lat: specificLocationSearch.data.latitude,
+                            lon: specificLocationSearch.data.longitude,
+                            units: "imperial",
+                        },
+                    }
+                );
 
                 console.log(weatherResults.data.list[0].weather[0].main);
                 // Push the result of the second call to the array
-                 if(weatherResults.data.list[0].weather[0].main == req.query.prefWeather){
+                if (
+                    weatherResults.data.list[0].weather[0].main ==
+                    req.query.prefWeather
+                ) {
                     resultArray.push(specificLocationSearch.data);
                 }
             }
@@ -214,13 +231,21 @@ app.get("/discoverData", async (req, res) => {
         // Now, resultArray contains the results of each step in between the Axios calls
         return res.status(200).render("pages/discover", {
             data: resultArray,
+            dates: {
+                endDate: req.query.endDate,
+                startDate: req.query.startDate,
+            },
             status: "success",
             message: "Success",
         });
     } catch (error) {
-        console.error('Error:', error.message);
+        console.error("Error:", error.message);
         return res.status(500).render("pages/discover", {
             data: [],
+            dates: {
+                endDate: req.query.endDate,
+                startDate: req.query.startDate,
+            },
             status: "error",
             message: "Internal Server Error",
         });
@@ -247,38 +272,38 @@ app.get("/mytrips", (req, res) => {
 app.get("/discover", (req, res) => {
     res.status(200).render("pages/discover", { data: [] });
 });
-app.get("/trips", (req, res) => {
-    const added = req.query.added;
-    // Query to list all the courses taken by a student
-    if (added) {
-        db.any(user_trips, [req.session.user[0]])
-            .then((trips) => {
-                res.render("pages/mytrips", {
-                    trips,
-                });
-            })
-            .catch((err) => {
-                res.render("pages/mytrips", {
-                    trips: [],
-                    error: true,
-                    message: err.message,
-                });
-            });
-    } else {
-        // Do nothing or handle the case where added is not true
-        res.render("pages/mytrips", {
-            trips: [], // You might want to pass an empty array or handle it as needed
-        });
+app.get("/trips", async (req, res) => {
+    try {
+        const userID = await db.one(
+            "SELECT user_id FROM users WHERE username = $1;",
+            [req.session.user.username]
+        );
+
+        const activities = `
+            SELECT activities.title, activities.description, activities.location, trips.end_date, trips.start_date, trips.trip_id
+            FROM activities
+            INNER JOIN trips ON trips.trip_id = activities.trip_id
+            WHERE trips.user_id = ${userID.user_id};
+        `;
+
+        const result = await db.any(activities);
+
+        console.log(result);
+
+        res.render("pages/mytrips", { result });
+    } catch (error) {
+        res.render("pages/mytrips", { result: [], message: error });
     }
 });
 
 app.post("/discover/add", async (req, res) => {
+    console.log(req.body);
     try {
         const activityTitle = req.body.activity_title;
         const description = req.body.description;
         const location = req.body.location;
-        const startDate = req.body.start_date;
-        const endDate = req.body.end_date;
+        const startDate = req.body.startDate;
+        const endDate = req.body.endDate;
 
         // Fetch user_id based on the username in the session
         const user = await db.one(
@@ -302,16 +327,9 @@ app.post("/discover/add", async (req, res) => {
             [tripId, activityTitle, description, location]
         );
 
-        // Render the "discover" page with a success message
-        res.render("pages/discover", {
-            message: `Successfully added ${activityTitle} to MyTrips`,
-            action: "add",
-        });
+        res.json({ message: `Successfully added ${activityTitle} to MyTrips` });
     } catch (err) {
-        res.render("pages/discover", {
-            error: true,
-            message: err.message,
-        });
+        res.json({ message: err.message });
     }
 });
 
@@ -325,26 +343,16 @@ app.post("/trips/delete", async (req, res) => {
 
         const userId = user.user_id;
 
-        // Perform the deletion and fetch updated list of trips
-        const [, trips] = await db.task("delete-activity", (task) => {
-            return task.batch([
-                task.none(
-                    `DELETE FROM activities
-                    WHERE user_id = $1 AND title = $2;`,
-                    [userId, req.body.activity_title]
-                ),
-                task.any(user_trips, [userId]),
-            ]);
-        });
+        await db.none(
+            `DELETE FROM activities WHERE trip_id = $1 AND title = $2;`,
+            [req.body.trip_id, req.body.activity_title]
+        );
 
-        res.render("pages/mytrips", {
-            trips,
-            message: `Successfully removed activity ${req.body.activity_title}`,
-            action: "delete",
-        });
+        res.redirect("/trips");
     } catch (err) {
+        console.log(err);
         res.render("pages/mytrips", {
-            trips: [],
+            result: [],
             error: true,
             message: err.message,
         });
