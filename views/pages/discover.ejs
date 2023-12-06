@@ -1,34 +1,155 @@
-<%- include ('../partials/header') %>
+<%- include ('../partials/header') %> 
 <%- include ('../partials/menu') %>
-<%- include ('../partials/message') %>
+<%-include ('../partials/message') %>
+
+<script>
+    async function addEvent(event, dates) {
+        eventData = JSON.parse(event);
+        dateData = JSON.parse(dates);
+
+        const activity_title = eventData.name;
+        const description = eventData.description;
+        const location = eventData.address_obj.city;
+        const endDate = dateData.endDate;
+        const startDate = dateData.startDate;
+
+        const body = {
+            activity_title,
+            description,
+            location,
+            endDate,
+            startDate,
+        };
+
+        const response = await fetch("/discover/add", {
+            method: "POST",
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify(body),
+        });
+
+        const jsonData = await response.json();
+
+        console.log(jsonData);
+
+        return false;
+    }
+</script>
+
 <main>
-	<div class="container">
-		<table>
-            <tr>
-                <th>Activities</th>
-                <th>Distance from your location</th>
-            </tr>
-            <%data.forEach((event) => { %>
-                <tr>
-                    <td><%-event.name%></td>
-                    <td><%-event.distance%></td>
-                </tr>
-            <%})%>
-        </table>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4" style="margin-top: 5%">
+                <form action="/discoverData" method="GET">
+                    <div class="form-group" style="margin-bottom: 3%">
+                        <label for="latitude">Latitude</label>
+                        <input
+                            name="latitude"
+                            type="text"
+                            class="form-control"
+                            id="latitude"
+                        />
+                        <p class ="form-text" align="top-right">
+                           Find latitude and longitude: <a href="https://www.latlong.net/">Here</a>
+                        </p>
+                    </div>
 
-		<form action="/discoverData" method="GET">
-			<label for="Latitude">Latitude</label>
-			<input name="latitude" type="text" id="latitude"/>
-		
-			<label for="Longitude">Longitude</label>
-			<input type="text" name="longitude" id="longitude"/>
+                    <div class="form-group" style="margin-bottom: 3%">
+                        <label for="longitude">Longitude</label>
+                        <input
+                            type="text"
+                            name="longitude"
+                            class="form-control"
+                            id="longitude"
+                        />
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1%">
+                        <label for="Radius" class = "form-label">Radius</label>
+                        <select class="form-select" id="radius" required>
+                            <option selected disabled value="">Choose...</option>
+                            <option>50 mi</option>
+                            <option>100 mi</option>
+                            <option>250 mi</option>
+                            <option>300+ mi</option>
+                          </select>
+                    </div>
 
-            <label for="Radius">Radius</label>
-			<input type="text" name="radius" id="radius"/>
-			
-			<button type="submit">Find</button>
-		</form>
+                    <div class="form-group" style="margin-bottom: 3%">
+                        <label for="prefWeather" class = "form-label">Preferred Weather</label>
+                        <select class="form-select" id="prefWeather" required>
+                            <option selected disabled value="">Choose...</option>
+                            <option>Clouds</option>
+                            <option>Clear</option>
+                            <option>Snow</option>
+                            <option>Rain</option>
+                          </select>
+                    </div>
 
+                    <div class="form-group" style="margin-bottom: 3%">
+                        <label for="startDate">Start Date</label> 
+                    <div id="datepicker" 
+                         class="input-group date" 
+                         data-date-format="mm-dd-yyyy"> 
+                        <input class="form-control" 
+                               type="text" readonly /> 
+                        <span class="input-group-addon"> 
+                            <i class="glyphicon glyphicon-calendar"></i> 
+                        </span> 
+                    </div> 
+                </div> 
+
+
+                <div class="form-group" style="margin-bottom: 3%">
+                    <label for="endDate">End Date</label> 
+                <div id="datepicker2" 
+                     class="input-group date" 
+                     data-date-format="mm-dd-yyyy"> 
+                    <input class="form-control" 
+                           type="text" readonly /> 
+                    <span class="input-group-addon"> 
+                        <i class="glyphicon glyphicon-calendar"></i> 
+                    </span> 
+                </div> 
+            </div> 
+
+                    <button type="submit" class="btn btn-primary">Find</button>
+                </form>
+            </div>
+            <div class="col-md-8" style="margin-top: 5%">
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                        <% if(data && data.length > 0) { data.forEach((event) => {
+                        %>
+                        <div class="card" style="margin-bottom: 3%">
+                            <div class="card-body">
+                                <h5 class="card-title"><%- event.name %></h5>
+                                <p class="card-text"><%= event.description %></p>
+                                <p class="card-text">
+                                    City: <%= event.address_obj.city %>
+                                </p>
+                                <a
+                                    href="<%= event.web_url %>"
+                                    class="btn btn-primary"
+                                    target="_blank"
+                                    >View</a
+                                >
+                                <button
+                                        type="button"
+                                        onclick="addEvent('<%=JSON.stringify(event)%>', '<%=JSON.stringify(dates)%>')"
+                                        class="btn btn-success"
+                                    >
+                                        Add
+                                    </button>
+                                <!-- Add more card content if needed -->
+                            </div>
+                        </div>
+                    <% }); } else { %>
+                        <div class="text-center">
+                            <p class="display-4" style="height: 50%;margin-top: 75%;margin-right:-200%;">No Results</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 
 <%- include ('../partials/footer') %>
