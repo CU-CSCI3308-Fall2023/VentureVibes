@@ -19,7 +19,7 @@ How to run locally: N/A for now
 
 How to run the tests: N/A for now
 
-Link to the deployed application: N/A for now
+Link to the deployed application: http://recitation-11-team-02.eastus.cloudapp.azure.com:3000 
 
 ------------------------------------------------
 Team 2, Adventure Squad
