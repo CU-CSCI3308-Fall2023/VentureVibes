@@ -13,11 +13,11 @@ Empowering personalized travel experiences, our app simplifies vacation planning
 
 Technology Stack: Node.js, EJS, HTML, CSS, JavaScript
 
-Prerequisites to run the application: N/A for now
+Prerequisites to run the application: Access to the deployment link and docker must be running.
 
-How to run locally: N/A for now
+How to run locally: Make sure docker is up and running, but besides that, the test cases are up and running.
 
-How to run the tests: N/A for now
+How to run the tests: Docker-compose up, the tests will then show within the terminal.
 
 Link to the deployed application: http://recitation-11-team-02.eastus.cloudapp.azure.com:3000 
 
