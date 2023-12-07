@@ -165,7 +165,7 @@ app.get("/discoverData", async (req, res) => {
                 message: "Invalid input",
             });
         }
-
+        console.log("Tripadvisor")
         const tripAdvisorResults = await axios.get(
             `https://api.content.tripadvisor.com/api/v1/location/nearby_search`,
             {
@@ -212,7 +212,7 @@ app.get("/discoverData", async (req, res) => {
                         },
                     }
                 );
-
+                    console.log("Weather API")
                 // Third Axios call
                 const weatherResults = await axios.get(
                     `https://api.openweathermap.org/data/2.5/forecast`,
