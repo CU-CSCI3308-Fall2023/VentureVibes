@@ -204,6 +204,15 @@ app.get("/discoverData", async (req, res) => {
                     }
                 );
 
+                const photo = await axios.get(
+                    `https://api.content.tripadvisor.com/api/v1/location/${data.location_id}/photos`,
+                    {
+                        params: {
+                            key: process.env.ADVISOR_KEY,
+                        },
+                    }
+                );
+
                 // Third Axios call
                 const weatherResults = await axios.get(
                     `https://api.openweathermap.org/data/2.5/forecast`,
@@ -217,12 +226,20 @@ app.get("/discoverData", async (req, res) => {
                     }
                 );
 
-                console.log(weatherResults.data.list[0].weather[0].main);
+                console.log(
+                    "WEATHER: ",
+                    weatherResults.data.list[0].weather[0].main,
+                    req.query.prefWeather
+                );
                 // Push the result of the second call to the array
                 if (
                     weatherResults.data.list[0].weather[0].main ==
                     req.query.prefWeather
                 ) {
+                    specificLocationSearch.data["url"] =
+                        photo.data.data[0] !== undefined
+                            ? photo.data.data[0].images.original.url
+                            : "";
                     resultArray.push(specificLocationSearch.data);
                 }
             }
