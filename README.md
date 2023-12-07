@@ -15,9 +15,9 @@ Technology Stack: Node.js, EJS, HTML, CSS, JavaScript
 
 Prerequisites to run the application: Access to the deployment link and docker must be running.
 
-How to run locally: Make sure docker is up and running, but besides that, the test cases are up and running.
+How to run locally: Clone this repository, make sure docker is up and running, docker compose up, server should be running on localhost.
 
-How to run the tests: Docker-compose up, the tests will then show within the terminal.
+How to run the tests: docker compose up, the tests will then show within the terminal.
 
 Link to the deployed application: http://recitation-11-team-02.eastus.cloudapp.azure.com:3000 
 
