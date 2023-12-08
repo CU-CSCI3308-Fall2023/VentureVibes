@@ -49,7 +49,7 @@ Make sure to have VS Code and Docker already installed.
 
 ## How to run the tests: 
 
-docker compose up, the tests will then show within the terminal.
+Type docker compose up into the terminal. The tests will then show within the terminal.
 
 --------------------------------------------------------------------------
 
@@ -58,7 +58,7 @@ docker compose up, the tests will then show within the terminal.
 http://recitation-11-team-02.eastus.cloudapp.azure.com:3000 
 
 ------------------------------------------------
-Team 2, Adventure Squad
+## Team 2, Adventure Squad
 
 ## Contributors 
 
