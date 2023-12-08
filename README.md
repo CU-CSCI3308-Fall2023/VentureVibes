@@ -19,23 +19,33 @@ Node.js, EJS, HTML, Bootsrap, JavaScript, PostgreSQL, VS Code, Azure, Tripadviso
 
 ## Prerequisites to run the application: 
 
-Create a .env file. Inside that file copy and paste:
-
-POSTGRES_USER="postgres"
-
-POSTGRES_PASSWORD="pwd"
-
-POSTGRES_DB="users_db"
-
-SESSION_SECRET = "super duper secret!"
-
-ADVISOR_KEY="9B92E43DA3494C1D9851666FE9486B1D"
-
-WEATHER_KEY="6f39900b6910c32d43c6e2a6233d9535"
+Make sure to have VS Code and Docker already installed.
 
 ## How to run locally: 
 
-Clone this repository, make sure docker is up and running, change directory into Project folder, type "docker compose up" into the terminal => server should be running on localhost.
+1. Clone this repository
+
+2. Create a .env file. Inside that file copy and paste:
+
+    POSTGRES_USER="postgres"
+    
+    POSTGRES_PASSWORD="pwd"
+    
+    POSTGRES_DB="users_db"
+    
+    SESSION_SECRET = "super duper secret!"
+    
+    ADVISOR_KEY="9B92E43DA3494C1D9851666FE9486B1D"
+    
+    WEATHER_KEY="6f39900b6910c32d43c6e2a6233d9535"
+   
+3. Make sure docker is up and running
+
+4. Change directory into Project folder
+
+5. Type "docker compose up" into the terminal
+   
+6. => server should be running on localhost.
 
 ## How to run the tests: 
 
