@@ -11,11 +11,33 @@ Empowering personalized travel experiences, our app simplifies vacation planning
 
 ---------------------------------------------
 
-Technology Stack: Node.js, EJS, HTML, CSS, JavaScript
+Technology Stack: Node.js, EJS, HTML, Bootsrap, JavaScript, PostgreSQL, VS Code, Azure, Tripadvisor API, OpenWeatherMap API, Mocha and Chai, Docker
 
-Prerequisites to run the application: Access to the deployment link and docker must be running.
+-------------------------------------------------------------
 
-How to run locally: Clone this repository, make sure docker is up and running, docker compose up, server should be running on localhost.
+Prerequisites to run the application: 
+
+Create a .env file. Inside that file copy and paste:
+
+# database credentials
+
+POSTGRES_USER="postgres"
+
+POSTGRES_PASSWORD="pwd"
+
+POSTGRES_DB="users_db"
+
+# Node vars
+
+SESSION_SECRET = "super duper secret!"
+
+ADVISOR_KEY="9B92E43DA3494C1D9851666FE9486B1D"
+
+WEATHER_KEY="6f39900b6910c32d43c6e2a6233d9535"
+
+--------------------------------------------------------------
+
+How to run locally: Clone this repository, make sure docker is up and running, type "docker compose up" into the terminal => server should be running on localhost.
 
 How to run the tests: docker compose up, the tests will then show within the terminal.
 
