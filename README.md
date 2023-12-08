@@ -11,11 +11,13 @@ Empowering personalized travel experiences, our app simplifies vacation planning
 
 ---------------------------------------------
 
-Technology Stack: Node.js, EJS, HTML, Bootsrap, JavaScript, PostgreSQL, VS Code, Azure, Tripadvisor API, OpenWeatherMap API, Mocha and Chai, Docker
+## Technology Stack: 
+
+Node.js, EJS, HTML, Bootsrap, JavaScript, PostgreSQL, VS Code, Azure, Tripadvisor API, OpenWeatherMap API, Mocha and Chai, Docker
 
 -------------------------------------------------------------
 
-Prerequisites to run the application: 
+## Prerequisites to run the application: 
 
 Create a .env file. Inside that file copy and paste:
 
@@ -31,18 +33,24 @@ ADVISOR_KEY="9B92E43DA3494C1D9851666FE9486B1D"
 
 WEATHER_KEY="6f39900b6910c32d43c6e2a6233d9535"
 
---------------------------------------------------------------
+## How to run locally: 
 
-How to run locally: Clone this repository, make sure docker is up and running, change directory into Project folder, type "docker compose up" into the terminal => server should be running on localhost.
+Clone this repository, make sure docker is up and running, change directory into Project folder, type "docker compose up" into the terminal => server should be running on localhost.
 
-How to run the tests: docker compose up, the tests will then show within the terminal.
+## How to run the tests: 
 
-Link to the deployed application: http://recitation-11-team-02.eastus.cloudapp.azure.com:3000 
+docker compose up, the tests will then show within the terminal.
+
+--------------------------------------------------------------------------
+
+## Link to the deployed application: 
+
+http://recitation-11-team-02.eastus.cloudapp.azure.com:3000 
 
 ------------------------------------------------
 Team 2, Adventure Squad
 
-Contributors 
+## Contributors 
 
 Names: Mae Chen, Noah Rose, Wenbo Zhang, Emmy Wolf, Andrew Truong
 
