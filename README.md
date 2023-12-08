@@ -57,6 +57,10 @@ Type docker compose up into the terminal. The tests will then show within the te
 
 http://recitation-11-team-02.eastus.cloudapp.azure.com:3000 
 
+## Link to demo:
+
+https://youtu.be/GmA0xOdb8UI
+
 ------------------------------------------------
 ## Team 2, Adventure Squad
 
