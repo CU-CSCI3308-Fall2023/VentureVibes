@@ -35,9 +35,9 @@ Make sure to have VS Code and Docker already installed.
     
     SESSION_SECRET = "super duper secret!"
     
-    ADVISOR_KEY="<Create your own Tripadvisor API key>"
+    ADVISOR_KEY="`<Create your own Tripadvisor API key>`"
     
-    WEATHER_KEY="<Create your own OpenWeatherMap API key>"
+    WEATHER_KEY="`<Create your own OpenWeatherMap API key>`"
    
 3. Make sure docker is up and running
 
