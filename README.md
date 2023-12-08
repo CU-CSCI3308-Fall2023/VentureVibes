@@ -19,15 +19,11 @@ Prerequisites to run the application:
 
 Create a .env file. Inside that file copy and paste:
 
-# database credentials
-
 POSTGRES_USER="postgres"
 
 POSTGRES_PASSWORD="pwd"
 
 POSTGRES_DB="users_db"
-
-# Node vars
 
 SESSION_SECRET = "super duper secret!"
 
