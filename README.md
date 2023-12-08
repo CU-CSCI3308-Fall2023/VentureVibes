@@ -33,7 +33,7 @@ WEATHER_KEY="6f39900b6910c32d43c6e2a6233d9535"
 
 --------------------------------------------------------------
 
-How to run locally: Clone this repository, make sure docker is up and running, type "docker compose up" into the terminal => server should be running on localhost.
+How to run locally: Clone this repository, make sure docker is up and running, change directory into Project folder, type "docker compose up" into the terminal => server should be running on localhost.
 
 How to run the tests: docker compose up, the tests will then show within the terminal.
 
